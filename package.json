@@ -1,0 +1,13 @@
+{
+  "name": "ng-it-to-aviutl",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "parcel src/index.html",
+    "build": "parcel build ./src/index.html -o doc"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^3.4.1"
+  }
+}
