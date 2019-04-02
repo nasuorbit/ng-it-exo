@@ -8,6 +8,7 @@ const tracker = new ngTracker()
 const exo = new ngExo()
 
 El.beatToExoBtn.onclick = () => {
+  setConfig(convert)
   let outputText
   outputText = convert.beatToExo(El.inputTextarea.value, exo)
   El.outputTextarea.value = outputText
