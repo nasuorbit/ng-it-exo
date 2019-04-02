@@ -7,6 +7,12 @@ const convert = new ngConvert()
 const tracker = new ngTracker()
 const exo = new ngExo()
 
+El.beatToExoBtn.onclick = () => {
+  let outputText
+  outputText = convert.beatToExo(El.inputTextarea.value, exo)
+  El.outputTextarea.value = outputText
+}
+
 El.getNoteBtn.onclick = () => {
   setInput(tracker)
   setConfig(convert)

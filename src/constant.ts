@@ -10,3 +10,5 @@ export const getNoteBtn = <HTMLButtonElement>document.getElementById("get-note-b
 export const exoResetBtn = <HTMLButtonElement>document.getElementById("exo-reset-btn")!
 
 export const trackCntInput = <HTMLInputElement>document.getElementById("track-cnt-input")!
+
+export const beatToExoBtn = <HTMLButtonElement>document.getElementById("beat-to-exo-btn")!
