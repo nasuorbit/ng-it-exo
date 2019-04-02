@@ -29,8 +29,10 @@ export class ngConvert {
       if (b==="-")
         continue
       if (b==="o") {
-        start = this.bpm*i/this.tick +1 
-        exo.addScene(start,start + this.bpm/this.tick,1) // 仮
+        end = this.bpm*i/this.tick
+        if (start > 0)
+          exo.addScene(start,end,1) // 仮
+        start = end+1
       }
     }
     return exo.export()

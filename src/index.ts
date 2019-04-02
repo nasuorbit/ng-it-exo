@@ -12,11 +12,7 @@ El.getNoteBtn.onclick = () => {
   setConfig(convert)
   const tr = parseInt(El.trackCntInput.value,10)
   let outputText
-  try {
-    outputText = convert.beatToExo(tracker.getNoteRhythm(tr), exo)
-  } catch(e) {
-    outputText = e
-  }
+  outputText = convert.beatToExo(tracker.getNoteRhythm(tr), exo)
   El.outputTextarea.value = outputText
 }
 
@@ -30,17 +26,17 @@ El.convertBtn.onclick = (e) => {
   setConfig(convert)
   const tr = parseInt(El.trackCntInput.value,10)
   let outputText
-  try {
-    outputText = tracker.getNoteRhythm(tr)
-  } catch(e) {
-    outputText = e
-  }
+  outputText = tracker.getNoteRhythm(tr)
   El.outputTextarea.value = outputText
 }
 
 
 function setInput(tracker: ngTracker) {
-  tracker.setInputText(El.inputTextarea.value)
+  try {
+    tracker.setInputText(El.inputTextarea.value)
+  } catch(e) {
+    El.outputTextarea.value = e
+  }
 }
 
 function setConfig(convert: ngConvert) {
