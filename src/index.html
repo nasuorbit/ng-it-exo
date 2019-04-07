@@ -7,22 +7,34 @@
   <title>Document</title>
 </head>
 <body>
-  仮、未完成、WIP
-  <hr>
-  <textarea name="input-textarea" id="input-textarea" cols="60" rows="10"></textarea>
-  <div>
-      beat毎フレーム数:<input type="text" id="bpm-input">（ここにbpm予定）
-      fps:<input type="text" id="fps-input">(適応しない)
-      <button id="exo-reset-btn">exoReset</button>
-  </div>
-  <div>
-    track: <input type="text" id="track-cnt-input"> (0-*)
-    <button id="get-note-btn">getNote(IT->exo生成)</button>
-    <button id="beat-to-exo-btn">(oと-の文字列)->exo</button>
-  </div>
-  
-  <button id="convert-btn">convert</button>
-  <textarea name="output-textarea" id="output-textarea" cols="60" rows="10"></textarea>
+    仮、未完成、WIP、２
+    <hr>
+    <div>
+      <p>tracker</p>
+      <textarea name="tracker-input-textarea" id="tracker-input-textarea" cols="60" rows="10"></textarea>
+      →
+      <textarea name="tracker-output-textarea" id="tracker-output-textarea" cols="60" rows="10" readonly></textarea>
+      <button id="tracker-output-copy-btn">copy</button>
+      <div>
+        track: <input type="text" id="track-cnt-input">
+        <button id="tracker-convert-btn">convert</button>
+      </div>
+    </div>
+    
+    <div>
+      <p>code</p>
+      <textarea name="code-header-input-textarea" id="code-header-input-textarea" cols="60" rows="10"></textarea>
+      <textarea name="code-input-textarea" id="code-input-textarea" cols="60" rows="10"></textarea>
+      <textarea name="code-footer-input-textarea" id="code-footer-input-textarea" cols="60" rows="10"></textarea>
+      <div>
+          bpm:<input type="text" id="bpm-input">
+          fps:<input type="text" id="fps-input">
+          <button id="code-convert-btn">convert</button>
+      </div>
+    </div>
+    
+    <p>output</p>
+    <textarea name="output-textarea" id="output-textarea" cols="60" rows="10"></textarea>
   <script src="./index.ts"></script>
 </body>
 </html>

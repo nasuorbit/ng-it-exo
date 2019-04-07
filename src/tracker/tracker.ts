@@ -2,6 +2,7 @@
 interface TrackerData {
   orders: Array<number>
   patterns: Array<PatternData>
+  isNever? : boolean
 }
 
 interface PatternData {
@@ -23,20 +24,56 @@ interface RowData {
 export class ngTracker {
 
   inputText: string
-  data: TrackerData | undefined
-  bpm: number;
-  fps: number;
+  data: TrackerData
   constructor(text?: string) {
+    this.data = [] as any
+    this.inputText = ""
     if (text)
       this.setInputText(text)
+  }
+
+  getNoteRhythm(tr: number) : string {
+    if (this.data.isNever) {
+      console.log(this.data)
+      return this.inputText
+    }
+    let rhythm = ""
+    const tracks = this.getTrack(tr)
+    for (let i = 0; i < tracks.length; i++) {
+      const row = tracks[i];
+      if(row.note!=="...") {
+        const b = this.getb(row.instrument)
+        if (b)
+          rhythm = rhythm + b
+        else
+          rhythm = rhythm + "-"
+      } else {
+        rhythm += "-"
+      }
+    }
+    return "(beat " + rhythm + ")"
+  }
+
+  getb(num: number) : string {
+    if (!num)
+      return "-"
+    if (num>9)
+      return String.fromCharCode(num+55)
+    else
+      return num.toString(10)
   }
 
   parse(text: string) : TrackerData {
 
     let data : TrackerData = {} as any
     const lines = text.split("\n")
-    if (lines[0] !== "ModPlug Tracker  IT")
+    if (lines[0] !== "ModPlug Tracker  IT" && !lines[0].startsWith("ModPlug Tracker")) {
+      data.isNever = true
       throw new Error("入力されたデータはModPlug Tracker  ITじゃない");
+      //return data
+    } else {
+      data.isNever = false
+    }
 
     const orders = this.parseOrders(lines[1])
     if (orders) {
@@ -47,7 +84,7 @@ export class ngTracker {
     const patterns = this.parsePatterns(lines)
     data.patterns = patterns
 
-    console.log(data)
+    //console.log(data)
 
     return data
   }
@@ -57,7 +94,7 @@ export class ngTracker {
     let pos = 2;
     while(pos < lines.length) {
       const rows = this.parseRows(lines[pos])
-      console.log(rows)
+      //console.log(rows)
       pos += 1;
       if (rows !== false) {
         let pattern : PatternData = {} as any
@@ -85,7 +122,7 @@ export class ngTracker {
         tracks[t][i] = rows[t+1]
       }
     }
-    console.log(tracks)
+    //console.log(tracks)
     return tracks
   }
 
@@ -124,18 +161,6 @@ export class ngTracker {
     }
   }
 
-  /*
-    // 消す
-  setBpm(bpm: string | number) {
-    this.bpm = parseInt(bpm as any, 10);
-  }
-
-  //消す
-  setFps(fps: string | number) {
-    this.fps = parseInt(fps as any, 10);
-  }
-  */
-
   getTrack(tr: number) {
     let tracks : TrackData = []
     const orders = this.data.orders
@@ -145,22 +170,10 @@ export class ngTracker {
     return tracks
   }
 
-  getNoteRhythm(tr: number) {
-    let rhythm = ""
-    const tracks = this.getTrack(tr)
-    for (let i = 0; i < tracks.length; i++) {
-      const row = tracks[i];
-      if(row.note!=="...") {
-        rhythm += "o"
-      } else {
-        rhythm += "-"
-      }
-    }
-    return rhythm
-  }
-
+  /*
   toAviutl() : string {
     //const lines = this.parse(this.inputText)
     return this.data.patterns[0].tracks[0][0].note
   }
+  */
 }

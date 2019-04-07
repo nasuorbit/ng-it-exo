@@ -1,17 +1,18 @@
 
-interface ngExoObjInfo {
+export interface ngExoObjInfo {
   start: number
   end: number
   layer: number
   overlay: number
   camera: number
+  chain?: number
 }
 
 interface ngExoDrawParam {
   _name: "標準描画"
-  X: number
-  Y: number
-  Z: number
+  X: number[]
+  Y: number[]
+  Z: number[]
   拡大率: number
   透明度: number
   回転: number
@@ -57,7 +58,7 @@ export class ngExo {
     this.objs = []
   }
 
-  assignObjDef(info: Partial<ngExoObjInfo>, obj: any, draw: Partial<ngExoDrawParam>) : ngExoObj {
+  _assignObjDef(info: Partial<ngExoObjInfo>, obj: any, draw?: Partial<ngExoDrawParam>) : ngExoObj {
     return {info: {...this.defInfo, ...info}, obj: {...obj}, draw: {...this.defDraw, ...draw}}
   }
 
@@ -65,20 +66,36 @@ export class ngExo {
     return this._addScene({start: start, end: end},{_: _})
   }
 
-  _addScene(info: Partial<ngExoObjInfo>, scene: Partial<ngExoScene>, draw?: Partial<ngExoDrawParam>) {
-    const obj = this.assignObjDef(info, {...this.defScene, ...scene}, draw)
-    console.log(obj)
+  addObj(info: Partial<ngExoObjInfo>, objparam: object, draw?: Partial<ngExoDrawParam>) {
+    const obj = this._assignObjDef(info, objparam, draw)
     this.objs.push(obj)
     return
   }
 
-  paramStringify(param: object) : string {
+  _addScene(info: Partial<ngExoObjInfo>, scene: Partial<ngExoScene>, draw?: Partial<ngExoDrawParam>) {
+    const obj = this._assignObjDef(info, {...this.defScene, ...scene}, draw)
+    this.objs.push(obj)
+    return
+  }
+
+  paramStringify(param: {[ket:string]: any}) : string {
     let str = ""
     for (let k of Object.keys(param)) {
+      const value = typeof param[k] === "object" ? this.arrParse(param[k]) : param[k]
       if (k==="_")
-        str += "=" + param[k] + "\n"
+        str += "=" + value  + "\n"
       else
-        str += k + "=" + param[k] + "\n"
+        str += k + "=" + value + "\n"
+    }
+    return str
+  }
+
+  arrParse(arr: Array<any>) {
+    if (arr.length === 1)
+      return arr[0]
+    let str = ""
+    for (let i = 0; i < arr.length; i++) {
+      str += arr[i] + ",";
     }
     return str
   }
@@ -119,8 +136,8 @@ audio_ch=2`
 
   _defInfo() : ngExoObjInfo {
     return {
-      start: 0,
-      end: 1,
+      start: 1,
+      end: 2,
       layer: 1,
       overlay: 1,
       camera: 0
@@ -130,9 +147,9 @@ audio_ch=2`
   _defDraw() : ngExoDrawParam {
     return {
       _name: "標準描画",
-      X: 0,
-      Y: 0,
-      Z: 0,
+      X: [0],
+      Y: [0],
+      Z: [0],
       拡大率: 100.0,
       透明度: 0.0,
       回転: 0.0,
