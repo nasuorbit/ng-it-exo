@@ -53,12 +53,13 @@ export class ngConvert {
     return exo.export()
   }
   addBeat(exo: ngExo, beat: string, env: ngEnv) {
-    if (beat == "")
+    if (beat === "" || beat === null || beat === undefined)
       return
     const info = env.getObj("info") as ngExoObjInfo
+    if (typeof info.start === 'string')
+      info.start = parseInt(info.start,10)
     const defobj = env.getObj("obj")
     const draw = env.getObj("draw")
-    console.log(draw)
     const fpb = this.getFpb()
     let beatObj = env.getObj("beat")
     if (beatObj === null || beatObj === undefined) {
@@ -73,13 +74,21 @@ export class ngConvert {
         continue
       if (b==="-") {
       } else {
+        // 最後に追加したオブジェクトのendを伸ばす
         const lastObj = exo.getLastObj()
-        if (lastObj && info.start > lastObj.info.start) {
+        if (lastObj && !lastObj.ngEx["cut"] && info.start > lastObj.info.start) {
+          // ↑現在のstartが最後に追加したオブジェクトのstartより小さくなってたら変更しない
           lastObj.info.end = info.start-1
           exo.updLastObj(lastObj)
         }
+        
+        const num = this.getNum(b) // "0"の時は-1が返ってくる
+        if (num === -1) {
+          exo.updLastObjCut(true)
+          // カット
+          continue
+        }
         let obj = defobj
-        const num = this.getNum(b)
         if (beatObj[b]) {
           obj = Object.assign(obj, beatObj[b])
         } else if (beatObj[num]) {
@@ -108,8 +117,10 @@ export class ngConvert {
   getNum(b: string) : number {
     if (parseInt(b,10))
       return parseInt(b,10)
-    if (b==="-" || b==="0")
+    if (b==="-")
       return 0
+    if (b==="0")
+      return -1
     const code = b.toUpperCase().charCodeAt(0) - 55 // "A" = 65 ( -65 + 10)
     return code
   }
@@ -152,6 +163,16 @@ export class ngConvert {
     env.setObj("beat", {})
     env.setObj("layer", {"1":exo._defInfo()})
     env.set("debug", (xs:any) => console.log(xs))
+    env.set("get", (xs: string[])=>{
+      const name = xs[0];
+      return env.get(name)
+    })
+    env.set("set", (xs: string[])=>{
+      const name = xs[0];
+      const val = xs[1];
+      env.set(name, val)
+      return""
+    })
     env.set("setobj", (xs: string[])=>{
       const name = xs[0];
       const obj = JSON.parse(xs[1]);
@@ -160,8 +181,8 @@ export class ngConvert {
     })
     env.set("getobj", (xs: string[])=>{
       const name = xs[0];
-      console.log(env.getObj(name))
-      return""
+      //console.log(env.getObj(name))
+      return env.getObj(name)
     })
     env.set("updobj", (xs: string[])=>{
       const name = xs[0];
@@ -194,13 +215,32 @@ export class ngConvert {
       env.updObj("info", layer[num])
       return ""
     })
-    env.set("draw", (xs: string[])=>{
-      // 拡大率とか変更用
+    env.set("info", (xs: string[])=>{
+      // info変更ショートカット
       const vobj = JSON.parse(xs[0]);
-      console.log(vobj)
+      env.updObj("info", vobj)
+      return""
+    })
+    env.set("obj", (xs: string[])=>{
+      // obj変更ショートカット
+      const vobj = JSON.parse(xs[0]);
+      env.updObj("obj", vobj)
+      return""
+    })
+    env.set("draw", (xs: string[])=>{
+      // draw変更ショートカット
+      const vobj = JSON.parse(xs[0]);
       env.updObj("draw", vobj)
       return""
     })
+    env.set("start", (xs: string[])=>{
+      // info.start変更ショートカット
+      const vobj = parseInt(xs[0],10);
+      const info = env.getObj("info")
+      env.updObj("info", Object.assign(info, {start: vobj}))
+      return""
+    })
+    
     /*
     env.set("beat", (args : string[]) => {
       //const info = env.getObj("info")
@@ -223,12 +263,11 @@ export class ngConvert {
         //return op(this.fnCodeEval(ex, env))
       });
       return ""
-      /*
-    } else if (fnCode[0] === "layer") {
-      const arg = this.fnCodeEval(fnCode[1], new ngEnv(env))
-      env.setLayer(arg)
-      return ""
-      */
+    } else if (fnCode[0] === "stop") {
+      const msg = fnCode[1] ? fnCode[1] + "\n\n" : ""
+      const e = new Error(msg + this.exo.export());
+      e.name = 'ngCodeStop';
+      throw e;
     } else {
       // どの関数でも無かった場合
       const [opStr, ...args] : any = fnCode.map(ex => this.fnCodeEval(ex, env));

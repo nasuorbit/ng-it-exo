@@ -33,8 +33,9 @@ function tryOutput(fn: Function) {
   try {
     return fn();
   } catch(e) {
-    console.log(e)
-    El.outputTextarea.value = e
+    if (e.name !== 'ngCodeStop')
+      console.log(e)
+    return e.message
   }
 }
 

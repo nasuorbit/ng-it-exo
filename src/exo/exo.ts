@@ -24,6 +24,7 @@ interface ngExoObj {
   info: ngExoObjInfo
   obj: ngExoScene | any
   draw?: ngExoDrawParam
+  ngEx: {[key: string]: any}
 }
 
 interface ngExoScene {
@@ -59,7 +60,7 @@ export class ngExo {
   }
 
   _assignObjDef(info: Partial<ngExoObjInfo>, obj: any, draw?: Partial<ngExoDrawParam>) : ngExoObj {
-    return {info: {...this.defInfo, ...info}, obj: {...obj}, draw: {...this.defDraw, ...draw}}
+    return {info: {...this.defInfo, ...info}, obj: {...obj}, draw: {...this.defDraw, ...draw}, ngEx:{}}
   }
 
   addScene(start: number, end:number, _:number) {
@@ -84,6 +85,10 @@ export class ngExo {
 
   updLastObj(obj: ngExoObj){
     this.objs[this.objs.length-1]= obj
+  }
+
+  updLastObjCut(isCut: boolean){
+    this.objs[this.objs.length-1].ngEx["cut"] = isCut
   }
 
   paramStringify(param: {[ket:string]: any}) : string {
