@@ -58,6 +58,7 @@ export class ngConvert {
     const info = env.getObj("info") as ngExoObjInfo
     const defobj = env.getObj("obj")
     const draw = env.getObj("draw")
+    console.log(draw)
     const fpb = this.getFpb()
     let beatObj = env.getObj("beat")
     if (beatObj === null || beatObj === undefined) {
@@ -72,6 +73,11 @@ export class ngConvert {
         continue
       if (b==="-") {
       } else {
+        const lastObj = exo.getLastObj()
+        if (lastObj && info.start > lastObj.info.start) {
+          lastObj.info.end = info.start-1
+          exo.updLastObj(lastObj)
+        }
         let obj = defobj
         const num = this.getNum(b)
         if (beatObj[b]) {
@@ -143,6 +149,8 @@ export class ngConvert {
     env.setObj("info", exo._defInfo())
     env.setObj("obj", exo._defScene())
     env.setObj("draw", exo._defDraw())
+    env.setObj("beat", {})
+    env.setObj("layer", {"1":exo._defInfo()})
     env.set("debug", (xs:any) => console.log(xs))
     env.set("setobj", (xs: string[])=>{
       const name = xs[0];
@@ -162,11 +170,35 @@ export class ngConvert {
       return""
     })
     env.set("bset", (xs: string[])=>{
+      const obj : {[key:string]: any} = {}
       const name = xs[0];
       const vobj = JSON.parse(xs[1]);
-      const obj : {[key:string]: any} = {}
       obj[name] = vobj
       env.updObj("beat", obj)
+      return""
+    })
+    env.set("layer", (xs: string[])=>{
+      if (isNaN(xs[0] as any)) {
+        console.error("layer arg isNaN")
+        return ""
+      }
+      const num = xs[0];
+      const layer = env.getObj("layer")
+      if (!layer[num]) {
+        const obj : {[key:string]: ngExoObjInfo} = {}
+        obj[num] = exo._defInfo()
+        obj[num].layer = parseInt(num,10)
+        env.updObj("layer", obj)
+        layer[num] = obj[num]
+      }
+      env.updObj("info", layer[num])
+      return ""
+    })
+    env.set("draw", (xs: string[])=>{
+      // 拡大率とか変更用
+      const vobj = JSON.parse(xs[0]);
+      console.log(vobj)
+      env.updObj("draw", vobj)
       return""
     })
     /*
@@ -211,20 +243,20 @@ export class ngConvert {
     for (let i = start;i<code.length;i++) {
       if (code[i] === '(') {
         if (str !=="")
-        arr.push(...str.split(' ').filter(x => x !== ''))
+        arr.push(...str.replace("\n",' ').split(' ').filter(x => x !== ''))
         const [readi, inArr] = this.codeGetBracketed(code.substring(i))
         i += readi
         arr.push(inArr)
         str = ""
       } else if (code[i] === ')') {
         if (str !=="")
-        arr.push(...str.split(' ').filter(x => x !== ''))
-        return [i, arr]
+        arr.push(...str.replace("\n",' ').split(' ').filter(x => x !== ''))
+        return [i, arr] // ここで終わり
       } else {
         str += code[i]
       }
     }
-    return [0,arr]
+    return [0,arr] // 異常
   }
   /*
   codeGetBracketed(code: string, sarr?: Array<string | any>) {

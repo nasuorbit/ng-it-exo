@@ -50,7 +50,7 @@ export class ngEnv {
     if (subkeys) {
       for (let i = 0; i < subkeys.length; i++) {
         const v = this.get(key + "." + subkeys[i])
-        if (v)
+        if (v!==null)
           obj[subkeys[i]] = v
       }
       return obj

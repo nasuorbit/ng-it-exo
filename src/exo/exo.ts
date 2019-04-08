@@ -78,6 +78,14 @@ export class ngExo {
     return
   }
 
+  getLastObj() {
+    return this.objs[this.objs.length-1]
+  }
+
+  updLastObj(obj: ngExoObj){
+    this.objs[this.objs.length-1]= obj
+  }
+
   paramStringify(param: {[ket:string]: any}) : string {
     let str = ""
     for (let k of Object.keys(param)) {

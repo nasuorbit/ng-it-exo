@@ -11,7 +11,8 @@ El.trackerConvertBtn.onclick = (e) => {
   //setConfig(convert)
   const text = El.trackerInputTextarea.value
   tracker.setInputText(text)
-  const code = tryOutput(()=>tracker.getNoteRhythm(parseInt(El.trackCntInput.value,10)))
+  //const code = tryOutput(()=>tracker.getNoteRhythm(parseInt(El.trackCntInput.value,10)))
+  const code = tryOutput(()=>tracker.getNoteRhythm())
   return code ? El.trackerOutputTextarea.value = code : null
   //console.log(code)
   //setInput(convert, code)

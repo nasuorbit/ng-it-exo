@@ -32,26 +32,62 @@ export class ngTracker {
       this.setInputText(text)
   }
 
-  getNoteRhythm(tr: number) : string {
+  getNoteRhythm() : string {
     if (this.data.isNever) {
       console.log(this.data)
       return this.inputText
     }
-    let rhythm = ""
-    const tracks = this.getTrack(tr)
-    for (let i = 0; i < tracks.length; i++) {
-      const row = tracks[i];
-      if(row.note!=="...") {
-        const b = this.getb(row.instrument)
-        if (b)
-          rhythm = rhythm + b
-        else
-          rhythm = rhythm + "-"
-      } else {
-        rhythm += "-"
+    let code = ""
+    const tracks = this.getAllTracks()
+    for (let tr = 0; tr < tracks.length; tr++) {
+      const track = tracks[tr]
+      code = code + "(layer " + (tr+1) + ")\n(beat \n"
+      for (let pt = 0; pt < track.length; pt++) {
+        let rhythm = ""
+        for (let i = 0; i < track[pt].length; i++) {
+          const row = track[pt][i];
+          if(row.note!=="...") {
+            const b = this.getb(row.instrument)
+            if (b)
+              rhythm = rhythm + b
+            else
+              rhythm = rhythm + "-"
+          } else {
+            rhythm += "-"
+          }
+        }
+        code = code + rhythm + "\n"
       }
+      code = code + ")\n"
     }
-    return "(beat " + rhythm + ")"
+    return code
+  }
+
+  getNoteRhythmTrack(tr: number) : string {
+    if (this.data.isNever) {
+      console.log(this.data)
+      return this.inputText
+    }
+    let code = ""
+    const tracks = this.getOneTrack(tr)
+    for (let pt = 0; pt < tracks.length; pt++) {
+      let rhythm = ""
+      for (let i = 0; i < tracks[pt].length; i++) {
+        
+        const row = tracks[pt][i];
+        if(row.note!=="...") {
+          const b = this.getb(row.instrument)
+          if (b)
+            rhythm = rhythm + b
+          else
+            rhythm = rhythm + "-"
+        } else {
+          rhythm += "-"
+        }
+      }
+      code = code + "(beat " + rhythm + ")\n"
+    }
+    return code
   }
 
   getb(num: number) : string {
@@ -161,11 +197,19 @@ export class ngTracker {
     }
   }
 
-  getTrack(tr: number) {
-    let tracks : TrackData = []
+  getOneTrack(tr: number) {
+    let tracks : TrackData[] = []
     const orders = this.data.orders
     for (let i = 0; i < orders.length; i++) {
-      tracks.push(...this.data.patterns[orders[i]].tracks[tr])
+      tracks.push(this.data.patterns[orders[i]].tracks[tr])
+    }
+    return tracks
+  }
+
+  getAllTracks() {
+    let tracks : TrackData[][] = []
+    for (let i = 0; i < this.data.patterns[0].tracks.length; i++) {
+      tracks.push(this.getOneTrack(i))
     }
     return tracks
   }
