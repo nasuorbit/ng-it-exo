@@ -162,6 +162,16 @@ export class ngConvert {
     env.setObj("draw", exo._defDraw())
     env.setObj("beat", {})
     env.setObj("layer", {"1":exo._defInfo()})
+    env.set("+", (xs: string[])=>{
+      let kekka = xs[0];
+      for (let index = 1; index < xs.length; index++) {
+        kekka += xs[index];
+      }
+      return kekka
+    })
+    env.set("int", (xs: string[])=>{
+      return parseInt(xs[0],10)
+    })
     env.set("debug", (xs:any) => console.log(xs))
     env.set("get", (xs: string[])=>{
       const name = xs[0];

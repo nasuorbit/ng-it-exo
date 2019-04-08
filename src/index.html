@@ -39,20 +39,24 @@
 
     <hr>
     <div>
+      <p>雑な説明（とっても分かりにくい）</p>
       <p>使い方: codeのテキストエリアに「(beat 11--1-1-)」みたいに書いて下のconvert押す(1-9,A-Z...)(0はそこでカット)</p>
       <p>codeのテキストエリアが３つあるが、意味は左から順番に実行されるだけ、編集しやすいように使う（最初のテキストエリアにbsetとかを置くとかする）</p>
       <br>
       <p>exo対応表: info→[*], obj→[*.0], draw→[*.1]  (*に数字、exoを見てね)</p>
       <p>globalobj: info, obj, draw, beat(beatの文字毎のobj設定), layer(layer毎のinfo設定、(layer [number])をした時に設定が変わる)</p>
       <p>function:</p>
-      <p>(debug [any]): console.log([any])をする, set, get, setobj, getobj, updobj,</p>
+      <p>set, get, setobj, getobj, updobj,</p>
+      <p>(+ [any] ...): 引数を左から順に全部足したのを返す</p>
+      <p>(int [string]): parseIntしたのを返す</p>
+      <p>(debug [any]): console.log([any])をする</p>
       <p>(bset [string] [JSON(空白、改行を含まない)]) : beatの文字毎のobj設定変更</p>
-      <p>(layer [number]) : レイヤー変更</p>
+      <p>(layer [number]) : レイヤー変更、infoをglobalobjのlayer.[number]の設定に変更</p>
       <p>(info [JSON(空白、改行を含まない)]) : info設定変更</p>
       <p>(start [number]) : info.start変更</p>
       <p>(obj [JSON(空白、改行を含まない)]) : obj設定変更</p>
       <p>(draw [JSON(空白、改行を含まない)]) : draw設定変更</p>
-      <p>実際はstringとnumberはほぼ区別してないので意味無い、get,getobj以外の返り値は基本的に空文字、エラー出たらconsole.logに出す(開発者ツールのコンソールを確認する)</p>
+      <p>実際はstringとnumberはほぼ区別してないので意味無い、+,get,getobj以外の返り値は基本的に空文字、エラー出たらconsole.logに出す(開発者ツールのコンソールを確認する)</p>
       <p>特殊:</p>
       <p>(beat [string] ...) : beat、特殊→引数順番に実行される→先に全ての引数の実行してからaddbeatでは無く、順番に実行してaddbeatを繰り返す、これは途中で(draw)とかを使った時にその位置から適応される用</p>
       <p>(stop [string]) : ここでエラーを発生させて、実行を止めてそこまでのexoを出力、引数1: エラーメッセージ(outputの最初の行に出力されます)</p>
