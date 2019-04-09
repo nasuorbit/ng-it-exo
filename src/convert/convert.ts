@@ -169,10 +169,52 @@ export class ngConvert {
       }
       return kekka
     })
+    env.set("-", (xs: string[])=>{
+      let kekka = parseFloat(xs[0]);
+      for (let index = 1; index < xs.length; index++) {
+        kekka -= parseFloat(xs[index]);
+      }
+      return kekka
+    })
+    env.set("*", (xs: string[])=>{
+      let kekka = parseFloat(xs[0]);
+      for (let index = 1; index < xs.length; index++) {
+        kekka *= parseFloat(xs[index]);
+      }
+      return kekka
+    })
+    env.set("/", (xs: string[])=>{
+      let kekka = parseFloat(xs[0]);
+      for (let index = 1; index < xs.length; index++) {
+        kekka /= parseFloat(xs[index]);
+      }
+      return kekka
+    })
+    env.set("+i", (xs: string[])=>{
+      let kekka = 0;
+      for (let index = 1; index < xs.length; index++) {
+        kekka += parseInt(xs[index],10);
+      }
+      return kekka
+    })
+    env.set("+f", (xs: string[])=>{
+      let kekka = 0.0;
+      for (let index = 0; index < xs.length; index++) {
+        kekka += parseFloat(xs[index]);
+      }
+      return kekka
+    })
+    env.set("+s", (xs: string[])=>{
+      let kekka = "";
+      for (let index = 0; index < xs.length; index++) {
+        kekka += xs[index];
+      }
+      return kekka
+    })
     env.set("int", (xs: string[])=>{
       return parseInt(xs[0],10)
     })
-    env.set("debug", (xs:any) => console.log(xs))
+    env.set("debug", (xs:any) => {console.log(xs); return""})
     env.set("get", (xs: string[])=>{
       const name = xs[0];
       return env.get(name)
@@ -184,26 +226,33 @@ export class ngConvert {
       return""
     })
     env.set("setobj", (xs: string[])=>{
-      const name = xs[0];
-      const obj = JSON.parse(xs[1]);
+      const [name, ...args] = xs;
+      const obj = JSON.parse((env.get('+s')as Function)(args));
       env.setObj(name, obj)
       return""
     })
     env.set("getobj", (xs: string[])=>{
       const name = xs[0];
-      //console.log(env.getObj(name))
-      return env.getObj(name)
+      if (xs.length>1) {
+        let objvalue = env.getObj(name)
+        for (let index = 1; index < xs.length; index++) {
+          objvalue = objvalue[xs[index]];
+        }
+        return objvalue
+      } else {
+        return env.getObj(name)
+      }
     })
     env.set("updobj", (xs: string[])=>{
-      const name = xs[0];
-      const obj = JSON.parse(xs[1]);
+      const [name, ...args] = xs;
+      const obj = JSON.parse((env.get('+s')as Function)(args));
       env.updObj(name, obj)
       return""
     })
     env.set("bset", (xs: string[])=>{
       const obj : {[key:string]: any} = {}
-      const name = xs[0];
-      const vobj = JSON.parse(xs[1]);
+      const [name, ...args] = xs;
+      const vobj = JSON.parse((env.get('+s')as Function)(args));
       obj[name] = vobj
       env.updObj("beat", obj)
       return""
@@ -227,19 +276,19 @@ export class ngConvert {
     })
     env.set("info", (xs: string[])=>{
       // info変更ショートカット
-      const vobj = JSON.parse(xs[0]);
+      const vobj = JSON.parse((env.get('+s')as Function)(xs));
       env.updObj("info", vobj)
       return""
     })
     env.set("obj", (xs: string[])=>{
       // obj変更ショートカット
-      const vobj = JSON.parse(xs[0]);
+      const vobj = JSON.parse((env.get('+s')as Function)(xs));
       env.updObj("obj", vobj)
       return""
     })
     env.set("draw", (xs: string[])=>{
       // draw変更ショートカット
-      const vobj = JSON.parse(xs[0]);
+      const vobj = JSON.parse((env.get('+s')as Function)(xs));
       env.updObj("draw", vobj)
       return""
     })
@@ -260,7 +309,7 @@ export class ngConvert {
       this.addBeats(exo, args.join(''), env)
     })
     */
-    return env
+    return new ngEnv(env)
   }
   fnCodeEval(fnCode: Array<string | any>, env: ngEnv) : string {
     if (typeof fnCode === 'string') {
@@ -274,8 +323,18 @@ export class ngConvert {
       });
       return ""
     } else if (fnCode[0] === "stop") {
-      const msg = fnCode[1] ? fnCode[1] + "\n\n" : ""
-      const e = new Error(msg + this.exo.export());
+      const [_, ...args] : any = fnCode.map(ex => this.fnCodeEval(ex, env));
+      console.log(args)
+      let msg = "";
+      for (let index = 0; index < args.length; index++) {
+        const arg = args[index];
+        if (typeof arg === 'object') {
+          msg += JSON.stringify(arg) + "\n"
+        } else {
+          msg = arg ? msg + arg + "\n" : msg
+        }
+      }
+      const e = new Error(msg + "\n" + this.exo.export());
       e.name = 'ngCodeStop';
       throw e;
     } else {

@@ -12,7 +12,7 @@ export const outputTextarea = <HTMLTextAreaElement>document.getElementById("outp
 export const bpmInput = <HTMLInputElement>document.getElementById("bpm-input")!
 export const fpsInput = <HTMLInputElement>document.getElementById("fps-input")!
 
-export const trackCntInput = <HTMLInputElement>document.getElementById("track-cnt-input")!
+//export const trackCntInput = <HTMLInputElement>document.getElementById("track-cnt-input")!
 
 /*
 export const getNoteBtn = <HTMLButtonElement>document.getElementById("get-note-btn")!
