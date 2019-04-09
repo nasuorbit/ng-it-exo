@@ -93,8 +93,9 @@ export class ngTracker {
   getb(num: number) : string {
     if (!num)
       return "-"
-    if (num>9)
+    if (num>9) {
       return String.fromCharCode(num+55)
+    }
     else
       return num.toString(10)
   }
@@ -165,7 +166,7 @@ export class ngTracker {
   parseRow(row: string) : RowData {
     let rowData : RowData = {} as any
     rowData.note = row.slice(0,3)
-    rowData.instrument = parseInt(row.slice(3,5),16)
+    rowData.instrument = parseInt(row.slice(3,5),10)
     rowData.volume = row.slice(5,8)
     rowData.effect = row.slice(8,10)
     return rowData
