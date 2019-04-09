@@ -44,7 +44,7 @@ export class ngEnv {
     this.objKeys[key] = keys
   }
 
-  getObj(key:string) {
+  getObj(key:string, searchouter=true) : any {
     const obj : any = {}
     const subkeys = this.objKeys[key]
     if (subkeys) {
@@ -55,17 +55,24 @@ export class ngEnv {
       }
       return obj
     } else {
-      return false
+      if (this.outer && searchouter)
+        return this.outer.getObj(key)
+      else
+        return false
     }
   }
 
   updObj(key:string, obj:{[key:string]: any}) {
-    const targetObj = this.getObj(key)
+    const targetObj = this.getObj(key, false)
     if (targetObj) {
       const newObj = Object.assign(targetObj, obj)
       this.setObj(key, newObj)
+      return true
     } else {
-      this.setObj(key, obj)
+      if (this.outer)
+        this.outer.updObj(key, obj)
+      else
+        this.setObj(key, obj)
     }
   }
 /*

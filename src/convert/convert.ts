@@ -56,6 +56,7 @@ export class ngConvert {
     if (beat === "" || beat === null || beat === undefined)
       return
     const info = env.getObj("info") as ngExoObjInfo
+    console.log(info)
     if (typeof info.start === 'string')
       info.start = parseInt(info.start,10)
     const defobj = env.getObj("obj")
@@ -101,7 +102,7 @@ export class ngConvert {
       }
       info.start += fpb
     }
-    env.setObj("info", info)
+    env.updObj("info", info)
   }
   getBLength(beat: string, start: number) : number {
     //console.log(start)
