@@ -52,11 +52,10 @@ document.onkeyup = (e) => {
 
 document.addEventListener("ngSelect", (e:CustomEventInit)=>{
   //console.log("ngSelect")
-  const value = e.detail.value
+  const obj = e.detail.obj
   if (!keypress[17]) // Ctrlが押されてなければ
-   El.editInput.value = value
-   El.editInput.select()
-  //obj[key] = value
+    El.editInput.value = obj[e.detail.key]
+  El.editInput.select()
 })
 
 /*

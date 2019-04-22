@@ -139,13 +139,6 @@ export class ngPatternEditor {
       });
       document.dispatchEvent(event);
     }
-    /*
-    elm.addEventListener("ngApply", (e:CustomEventInit)=>{
-      const value = e.detail.value
-      span.textContent = value
-      obj[key] = value
-    })
-    */
     return elm
   }
 
@@ -169,14 +162,6 @@ export class ngPatternEditor {
     
     if (this.selectElm) {
       this.updateEditableElmData(value, this.selectElm)
-      /*
-      event = new CustomEvent("ngApply", {
-        detail: {
-          value: value
-        }
-      });
-      this.selectElm.target.dispatchEvent(event);
-      */
     }
   }
 
