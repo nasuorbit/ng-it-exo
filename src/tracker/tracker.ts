@@ -5,7 +5,7 @@ interface TrackerData {
   isNever? : boolean
 }
 
-interface PatternData {
+export interface PatternData {
   rows: number
   tracks: Array<TrackData>
 }
@@ -14,7 +14,7 @@ interface TrackData extends Array<RowData> {
   [key: number] : RowData
 }
 
-interface RowData {
+export interface RowData {
   note: string
   instrument: number
   volume: string
@@ -26,7 +26,7 @@ export class ngTracker {
   inputText: string
   data: TrackerData
   constructor(text?: string) {
-    this.data = [] as any
+    this.data = {isNever: true} as any
     this.inputText = ""
     if (text)
       this.setInputText(text)
@@ -167,6 +167,7 @@ export class ngTracker {
     let rowData : RowData = {} as any
     rowData.note = row.slice(0,3)
     rowData.instrument = parseInt(row.slice(3,5),10)
+    if (isNaN(rowData.instrument)) rowData.instrument = 0
     rowData.volume = row.slice(5,8)
     rowData.effect = row.slice(8,10)
     return rowData
@@ -194,8 +195,15 @@ export class ngTracker {
   setInputText(inputText: string) {
     if (inputText !== this.inputText) {
       this.inputText = inputText
-      this.data = this.parse(this.inputText)
+      try {
+        this.data = this.parse(this.inputText)
+      } catch (e) {
+        console.error(e)
+        return false
+      }
+      return true
     }
+    return false
   }
 
   getOneTrack(tr: number) {

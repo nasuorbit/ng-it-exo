@@ -4,69 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" href="./style.css">
   <title>Document</title>
+  <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-    仮、未完成、WIP、２
-    <hr>
-    <div>
-      <p>tracker</p>
-      <textarea name="tracker-input-textarea" id="tracker-input-textarea" cols="60" rows="10"></textarea>
-      →
-      <textarea name="tracker-output-textarea" id="tracker-output-textarea" cols="60" rows="10" readonly></textarea>
-      <button id="tracker-output-copy-btn">copy</button>
-      <div>
-        <!--track: <input type="text" id="track-cnt-input">-->
-        <button id="tracker-convert-btn">convert</button>
-      </div>
-    </div>
-    
-    <div>
-      <p>code</p>
-      <textarea name="code-header-input-textarea" id="code-header-input-textarea" cols="60" rows="10"></textarea>
-      <textarea name="code-input-textarea" id="code-input-textarea" cols="60" rows="10"></textarea>
-      <textarea name="code-footer-input-textarea" id="code-footer-input-textarea" cols="60" rows="10"></textarea>
-      <div>
-          bpm:<input type="text" id="bpm-input">
-          fps:<input type="text" id="fps-input">(fps60しか試してない)
-          <button id="code-convert-btn">convert</button>
-      </div>
-    </div>
-    
-    <p>output</p>
-    <textarea name="output-textarea" id="output-textarea" cols="60" rows="10"></textarea>
-
-    <hr>
-    <div>
-      <p>雑な説明（とっても分かりにくい）</p>
-      <p>codeからexoが生成される</p>
-      <p>OpenMPTのパターンエディタからパターンをコピーしてtrackerに貼り付けてconvertで(beat)を使ったcode生成される</p>
-      <p>codeのテキストエリアに「(beat 11--1-1-)」(一文字毎にオブジェクトが配置される、文字種類が種類になる、0-9,A-Z...、0はカット用、-は何も置かず最後に置いたオブジェクトのendを伸ばす)みたいに書いて下のbpmとfpsを入力してconvert押す</p>
-      <p>codeのテキストエリアが３つあるが、意味は左から順番に実行されるだけ、編集しやすいように使う（最初のテキストエリアにbsetとかを置くとかする）</p>
-      <br>
-      <p>code構文は行き当たりばったりで作った結果、よくわからん、見た目はLisp系っぽいが色々よく分からん、今の所、関数定義とかが出来ないので無駄い</p>
-      <p>exo対応表: info→[*], obj→[*.0], draw→[*.1]  (*に数字、exoを見てね)</p>
-      <p>globalobj: info, obj=シーンオブジェクトなデフォルト値, draw, beat(beatの文字毎のobj設定), layer(layer毎のinfo設定、(layer [number])をした時に設定が変わる)</p>
-      <p>function:</p>
-      <p>set, get, setobj, getobj, updobj,: 変数操作、例:(getobj info start), (set name value), (updobj layer (+s {"2":{"start":(getobj info start)}})) みたいに使う</p>
-      <p>(+ [any] ...): 引数を左から順に全部足したのを返す</p>
-      <p>(+i [any] ...): parseIntした引数を左から順に全部足したのを返す</p>
-      <p>(+f [any] ...): parseFloatした引数を左から順に全部足したのを返す</p>
-      <p>-, *, /, :parseFloatした引数を最初の引数を元にして全部(引く、掛ける、割る)したのを返す</p>
-      <p>(int [string]): parseIntしたのを返す</p>
-      <p>(debug [any]): console.log([any])をする</p>
-      <p>(bset [string] [JSON]) : beatの文字毎のobj設定変更、例:「(bset 2 {"再生位置":200})」</p>
-      <p>(layer [number]) : レイヤー変更、infoをglobalobjのlayer.[number]の設定に変更</p>
-      <p>(info [JSON]) : info設定変更</p>
-      <p>(start [number]) : info.start変更</p>
-      <p>(obj [JSON]) : obj設定変更</p>
-      <p>(draw [JSON]) : draw設定変更</p>
-      <p>実際はstringとnumberはほぼ区別してないので意味無い、エラー出たらconsole.logに出す(開発者ツールのコンソールを確認する)</p>
-      <p>特殊:</p>
-      <p>(beat [string] ...) : beat、特殊→引数順番に実行される→先に全ての引数の実行してからaddbeatでは無く、順番に実行してaddbeatを繰り返す、これは途中で(draw)とかを使った時にその位置から適応される用</p>
-      <p>(stop [any]? ...) : ここで実行を止めてそこまでのexoを出力、[any]: outputの最初の行に[any]が出力されます</p>
-    </div>
+  <textarea name="tracker-input-textarea" id="tracker-input-textarea" cols="60" rows="10"></textarea>
+  <button id="tracker-convert-btn">convert</button>
+  <div id="editor"></div>
+  <div id="footer-float">
+    <input type="text" id="edit-input">
+    <button id="edit-apply-btn">apply</button>
+    <span id="debug"></span>
+  </div>
+  
   <script src="./index.ts"></script>
 </body>
 </html>

@@ -8,7 +8,7 @@ export interface ngExoObjInfo {
   chain?: number
 }
 
-interface ngExoDrawParam {
+export interface ngExoDrawParam {
   _name: "標準描画"
   X: number[]
   Y: number[]
@@ -20,7 +20,7 @@ interface ngExoDrawParam {
 }
 
 
-interface ngExoObj {
+export interface ngExoObj {
   info: ngExoObjInfo
   obj: ngExoScene | any
   draw?: ngExoDrawParam

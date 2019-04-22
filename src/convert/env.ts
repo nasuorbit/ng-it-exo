@@ -12,7 +12,7 @@ export class ngEnv {
   }
 
   set(key : string, val : string | Function) {
-    return this.dict.set(key, val) && null
+    return this.dict.set(key, val)
   }
 
   get(key : string) : string | Function | null | undefined {

@@ -56,7 +56,6 @@ export class ngConvert {
     if (beat === "" || beat === null || beat === undefined)
       return
     const info = env.getObj("info") as ngExoObjInfo
-    console.log(info)
     if (typeof info.start === 'string')
       info.start = parseInt(info.start,10)
     const defobj = env.getObj("obj")
@@ -193,7 +192,7 @@ export class ngConvert {
     })
     env.set("+i", (xs: string[])=>{
       let kekka = 0;
-      for (let index = 1; index < xs.length; index++) {
+      for (let index = 0; index < xs.length; index++) {
         kekka += parseInt(xs[index],10);
       }
       return kekka
@@ -223,6 +222,7 @@ export class ngConvert {
     env.set("set", (xs: string[])=>{
       const name = xs[0];
       const val = xs[1];
+      //console.log(val)
       env.set(name, val)
       return""
     })

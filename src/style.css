@@ -2,3 +2,53 @@ p {
   padding:0;
   margin:0;
 }
+
+#footer-float {
+  position: fixed;
+  bottom: 0px;
+  height: 40px;
+  width: 100%
+}
+
+.pattern {
+  overflow-x: scroll;
+  white-space: nowrap;
+}
+
+.track-header {
+  display: inline-block;
+  height: 30px;
+  width: 240px;
+  background-color: #ddd;
+}
+
+.track {
+  display: inline-block;
+}
+
+.field {
+  display: inline-block;
+  width: 60px;
+  height: 20px;
+}
+
+.field.note {
+  background-color: #fee
+}
+
+.field.inst {
+  background-color: #eef
+}
+
+
+.field.volume {
+  background-color: #efe
+}
+
+.field.effect {
+  background-color: #eef
+}
+
+.pattern .field.select  {
+  background-color: #f63;
+}
